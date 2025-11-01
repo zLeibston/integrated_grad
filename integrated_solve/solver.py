@@ -4,7 +4,8 @@ from utils.load_data import get_CIFAR10_dataset, get_MNIST_dataset
 import torch.nn as nn
 from model_train.mnist_classifier import MnistClassifier
 from model_train.cifar10_classfier import Cifar10_Classifier
-from utils.plot_pic import plot_MNIST_denormalized, plot_CIFAR10_denormalized    
+from utils.plot_pic import plot_MNIST_denormalized, plot_CIFAR10_denormalized,heat_map_cifar10,heat_map_mnist
+
 
 
 class SampleProvider:
@@ -12,13 +13,21 @@ class SampleProvider:
         self.datasample = datasample
         self.len = self.datasample.__len__()
         self.shape = self.datasample[0][0].shape  #都是（C,H,W）
+        C, H, W = self.shape
+
+        if(C==1):
+            mean = torch.tensor([0.1307]).view(C, 1, 1)
+            std = torch.tensor([0.3081]).view(C, 1, 1)
+        else:
+            mean = torch.tensor([0.4914, 0.4822, 0.4465]).view(C, 1, 1)
+            std = torch.tensor([0.247, 0.243, 0.261]).view(C, 1, 1)
 
         self.baselines = {}
-        C, H, W = self.shape
-        self.baselines['black'] = torch.zeros((C, H, W))
-        self.baselines['white'] = torch.ones((C, H, W))
+       
+        self.baselines['black'] = (torch.zeros((C, H, W))-mean)/std
+        self.baselines['white'] = (torch.ones((C, H, W))-mean)/std
 
-        guassian_baseline = torch.randn((C, H, W)) * 0.5 + 0.5
+        guassian_baseline = torch.randn((C, H, W)) 
         guassian_baseline = torch.clamp(guassian_baseline,0,1)
         self.baselines['guassian'] = guassian_baseline
 
@@ -60,9 +69,7 @@ class Solver:
 
 
     def grad_of_imgs(self,img:torch.Tensor,target_label:int):
-        img = img.unsqueeze(0)  #添加batch维度
-   
-        img.requires_grad_(True) 
+        img = img.clone().detach().unsqueeze(0).requires_grad_(True)
 
         self.model.eval()
 
@@ -145,17 +152,25 @@ if __name__ == "__main__":
     cifar10_ig_w ,img8 , label8= cifar10_solver.compute_integrated_gradients(baseline_type='white')
 
     plot_MNIST_denormalized(torch.stack([mnist_ig_b,img1]),[label1,label1])
+    heat_map_mnist(mnist_ig_b)
     plot_MNIST_denormalized(torch.stack([mnist_ig_g,img2]),[label2,label2])
+    heat_map_mnist(mnist_ig_g)
     plot_MNIST_denormalized(torch.stack([mnist_ig_a,img3]),[label3,label3])
+    heat_map_mnist(mnist_ig_a)
     plot_MNIST_denormalized(torch.stack([mnist_ig_w,img4]),[label4,label4])
+    heat_map_mnist(mnist_ig_w)
 
 
 
 
     plot_CIFAR10_denormalized(torch.stack([cifar10_ig_b,img5]),[label5,label5])
+    heat_map_cifar10(cifar10_ig_b)
     plot_CIFAR10_denormalized(torch.stack([cifar10_ig_g,img6]),[label6,label6])
+    heat_map_cifar10(cifar10_ig_g)
     plot_CIFAR10_denormalized(torch.stack([cifar10_ig_a,img7]),[label7,label7])
+    heat_map_cifar10(cifar10_ig_a)
     plot_CIFAR10_denormalized(torch.stack([cifar10_ig_w,img8]),[label8,label8])
+    heat_map_cifar10(cifar10_ig_w)
 
 
 

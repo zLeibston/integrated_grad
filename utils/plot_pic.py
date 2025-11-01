@@ -138,7 +138,65 @@ def plot_CIFAR10_denormalized(images, labels, predictions=None,
             predicted_label = predictions[i].item() if isinstance(predictions[i], torch.Tensor) else predictions[i]
             title += f'\nPred: {cifar10_classes[predicted_label]}'
         plt.title(title)
-        plt.axis('off')
+        plt.axis('off') 
 
-    plt.tight_layout()
+    plt.tight_layout() 
+    plt.show()
+
+def heat_map_mnist(data, title='mnist', cmap_name='RdBu_r'): # 默认使用 'RdBu_r'，_r 表示反转颜色
+    """
+    Plots a heatmap for the given 2D data, distinguishing positive and negative values.
+    
+    Parameters:
+    - data: 2D array-like structure (tensor or numpy array)
+    - title: Title of the heatmap
+    - cmap_name: Name of the diverging colormap to use (e.g., 'RdBu', 'coolwarm')
+    """
+    if isinstance(data, torch.Tensor):
+        data = data.cpu().numpy()
+    
+
+    if data.ndim == 3:
+        print(f"Warning: Input data is 3D ({data.shape}). Taking the mean along channel dimension for 2D visualization.")
+        data = np.mean(data, axis=0) 
+    
+    plt.figure(figsize=(8, 6))
+
+  
+    abs_max = np.max(np.abs(data))
+
+    
+    # 设置 vmin 和 vmax，以零为中心
+    # RdBu_r 表示红色为负，蓝色为正，白色为零。如果需要蓝色为负，红色为正，用 'RdBu'。
+    # coolwarm 也是一个很好的选择
+    plt.imshow(data, cmap=cmap_name, vmin=-abs_max, vmax=abs_max, interpolation='nearest')
+    
+    plt.colorbar(label='Attribution Value') # 给颜色条添加标签
+    plt.title(title)
+    plt.show()
+
+
+def heat_map_cifar10(data, title='cifar10', cmap_name='RdBu_r'): # 默认使用 'RdBu_r'，_r 表示反转颜色
+  
+    if isinstance(data, torch.Tensor):
+        data = data.cpu().numpy()
+
+    if data.ndim != 3:
+        raise ValueError(f"Input data must be 3D (C, H, W). Got shape: {data.shape}")
+    
+    plt.figure(figsize=(10, 5))
+    
+    for c in range(data.shape[0]):
+        channel_data = data[c]
+
+        plt.subplot(1, 3, c + 1)
+    
+        abs_max = np.max(np.abs(channel_data))
+
+        plt.imshow(channel_data, cmap=cmap_name, vmin=-abs_max, vmax=abs_max, interpolation='nearest')
+        
+        plt.colorbar(label='Attribution Value') # 给颜色条添加标签
+        plt.title(f'{title} - Channel {c}')
+        plt.axis('off')
+    plt.tight_layout() 
     plt.show()
