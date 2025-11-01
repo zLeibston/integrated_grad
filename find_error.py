@@ -1,8 +1,8 @@
 import torch
 from utils.plot_pic import plot_MNIST,plot_CIFAR10_denormalized
 from utils.load_data import load_MNIST,load_CIFAR10
-from mnist_classifier import MnistClassifier
-from cifar10_classfier import Cifar10_Classifier
+from model_train.mnist_classifier import MnistClassifier
+from model_train.cifar10_classfier import Cifar10_Classifier
 
 def find_error_mnist(model, data_loader,num_images=16):
     model.eval()
