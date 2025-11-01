@@ -29,7 +29,7 @@ class SampleProvider:
 
         guassian_baseline = torch.randn((C, H, W)) 
         guassian_baseline = torch.clamp(guassian_baseline,0,1)
-        self.baselines['guassian'] = guassian_baseline
+        self.baselines['guassian'] = (guassian_baseline-mean)/std
 
         average_baseline = torch.zeros((C, H, W))
         for _ in range(self.len):
