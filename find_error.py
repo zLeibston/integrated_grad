@@ -1,5 +1,5 @@
 import torch
-from utils.plot_pic import plot_MNIST,plot_CIFAR10_denormalized
+from utils.plot_pic import plot_MNIST,plot_MNIST_denormalized,plot_CIFAR10,plot_CIFAR10_denormalized
 from utils.load_data import load_MNIST,load_CIFAR10
 from model_train.mnist_classifier import MnistClassifier
 from model_train.cifar10_classfier import Cifar10_Classifier
@@ -23,6 +23,8 @@ def find_error_mnist(model, data_loader,num_images=16):
             if len(images_list) >= num_images:
                 break
     plot_MNIST(images_list, labels_list, predictions_list)
+    plot_MNIST_denormalized(images_list, labels_list, predictions_list)
+    
 
 def find_error_cifar10(model, data_loader,num_images=16):
     model.eval()
@@ -42,6 +44,7 @@ def find_error_cifar10(model, data_loader,num_images=16):
                     break
             if len(images_list) >= num_images:
                 break
+    plot_CIFAR10(images_list, labels_list, predictions_list)
     plot_CIFAR10_denormalized(images_list, labels_list, predictions_list)
 
 if __name__ == "__main__":

@@ -61,6 +61,39 @@ def plot_CIFAR10(images, labels, predictions=None):
     plt.show()
 
 
+
+
+def plot_MNIST_denormalized(images, labels, predictions=None, 
+                            mean=(0.1307,), 
+                            std=(0.3081,)):
+    
+    num_images = len(images)
+    grid_size = int(np.ceil(np.sqrt(num_images)))
+        
+    plt.figure(figsize=(10, 10))#这个figure的数字的大小可以调节整体图像的大小
+
+    mean_tensor = torch.tensor(mean).to(images.device if isinstance(images, torch.Tensor) else 'cpu')
+    std_tensor = torch.tensor(std).to(images.device if isinstance(images, torch.Tensor) else 'cpu')
+        
+    for i in range(num_images):
+        plt.subplot(grid_size, grid_size, i + 1)
+        img = images[i].squeeze() *mean_tensor + std_tensor  # 反标准化
+        img = torch.clamp(img, 0, 1)  # 裁剪到有效范围
+        img = img.cpu().numpy()
+        plt.imshow(img, cmap='gray')
+        title = f'True: {labels[i]}'
+        if predictions is not None:
+            title += f'\nPred: {predictions[i]}'
+        plt.title(title)
+        plt.axis('off')
+
+    plt.tight_layout()
+    plt.show()
+
+
+
+
+
 def plot_CIFAR10_denormalized(images, labels, predictions=None, 
                               mean=(0.4914, 0.4822, 0.4465), 
                               std=(0.2023, 0.1994, 0.2010)):
