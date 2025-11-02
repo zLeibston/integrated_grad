@@ -4,6 +4,7 @@ from utils.load_data import get_CIFAR10_dataset, get_MNIST_dataset
 import torch.nn as nn
 from model_train.mnist_classifier import MnistClassifier
 from model_train.cifar10_classfier import Cifar10_Classifier
+from model_train.mnist_classifier_plus import MnistClassifierPlus
 from utils.plot_pic import plot_MNIST_denormalized, plot_CIFAR10_denormalized,heat_map_cifar10,heat_map_mnist
 
 
@@ -128,21 +129,23 @@ if __name__ == "__main__":
     cifar10_sample = select_samples(get_CIFAR10_dataset(isTrain=False),num_samples)
 
     mnist_model = MnistClassifier()
+    mnist_model_plus = MnistClassifierPlus()
     cifar10_model = Cifar10_Classifier()
 
     mnist_model.load_state_dict(torch.load("models/best_mnist_classfier.pth"))
+    mnist_model_plus.load_state_dict(torch.load("models/best_mnist_classfier_plus.pth"))
     cifar10_model.load_state_dict(torch.load("models/best_cifar10_classfier.pth"))
 
     mnist_provider = SampleProvider(mnist_sample)
     cifar10_provider = SampleProvider(cifar10_sample)
 
-    mnist_solver = Solver(mnist_model, mnist_provider,num_step)
+    mnist_solver_plus = Solver(mnist_model_plus, mnist_provider,num_step)
     cifar10_solver = Solver(cifar10_model, cifar10_provider,num_step)
 
-    mnist_ig_b ,img1 ,label1 = mnist_solver.compute_integrated_gradients(baseline_type='black')
-    mnist_ig_g ,img2 ,label2 = mnist_solver.compute_integrated_gradients(baseline_type='guassian')
-    mnist_ig_a ,img3 ,label3 = mnist_solver.compute_integrated_gradients(baseline_type='average')
-    mnist_ig_w ,img4 ,label4 = mnist_solver.compute_integrated_gradients(baseline_type='white')
+    mnist_ig_b ,img1 ,label1 = mnist_solver_plus.compute_integrated_gradients(baseline_type='black')
+    mnist_ig_g ,img2 ,label2 = mnist_solver_plus.compute_integrated_gradients(baseline_type='guassian')
+    mnist_ig_a ,img3 ,label3 = mnist_solver_plus.compute_integrated_gradients(baseline_type='average')
+    mnist_ig_w ,img4 ,label4 = mnist_solver_plus.compute_integrated_gradients(baseline_type='white')
 
 
 
