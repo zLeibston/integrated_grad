@@ -3,7 +3,7 @@ import torchvision.transforms as transforms
 import torchvision.datasets as datasets
 import os
 
-def load_MNIST(root="/mnt/e/datasets/data/MNIST",isTrain=True):
+def load_MNIST(root="./data/MNIST",isTrain=True):
 
     transform = transforms.Compose([
         transforms.ToTensor(),
@@ -25,7 +25,7 @@ def load_MNIST(root="/mnt/e/datasets/data/MNIST",isTrain=True):
 
     return data_loader
 
-def load_CIFAR10(root="/mnt/e/datasets/data/CIFAR10",isTrain=True):
+def load_CIFAR10(root="./data/CIFAR10",isTrain=True):
     transform = transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))
@@ -49,24 +49,26 @@ def load_CIFAR10(root="/mnt/e/datasets/data/CIFAR10",isTrain=True):
 
 
 
-def get_MNIST_dataset(root="/mnt/e/datasets/data/MNIST",isTrain=False):
+def get_MNIST_dataset(root="./data/MNIST",isTrain=False):
 
     transform = transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize((0.1307,), (0.3081,))
     ])
+    print(f"Dataset will be attempted to download to: {os.path.abspath(root)}!!!!!!!!!!!")
     
-    dataset = datasets.MNIST(root=root, train=isTrain, transform=transform, download=False)
+    dataset = datasets.MNIST(root=root, train=isTrain, transform=transform, download=True)
 
     return dataset
 
-def get_CIFAR10_dataset(root="/mnt/e/datasets/data/CIFAR10",isTrain=False):
+def get_CIFAR10_dataset(root="./data/CIFAR10",isTrain=False):
     transform = transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))
     ])
+    print(f"Dataset will be attempted to download to: {os.path.abspath(root)}!!!!!!!!!!!")
     
-    dataset = datasets.CIFAR10(root=root, train=isTrain, transform=transform, download=False)
+    dataset = datasets.CIFAR10(root=root, train=isTrain, transform=transform, download=True)
 
     return dataset
 

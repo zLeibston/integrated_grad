@@ -123,24 +123,24 @@ def select_samples(dataset, num_samples=16):
 
 if __name__ == "__main__":
     num_samples = 1000
-    num_step = 1000
+    num_step = 5000
 
     mnist_sample = select_samples(get_MNIST_dataset(isTrain=False),num_samples)
-    cifar10_sample = select_samples(get_CIFAR10_dataset(isTrain=False),num_samples)
+    #cifar10_sample = select_samples(get_CIFAR10_dataset(isTrain=False),num_samples)
 
     mnist_model = MnistClassifier()
     mnist_model_plus = MnistClassifierPlus()
-    cifar10_model = Cifar10_Classifier()
+    #cifar10_model = Cifar10_Classifier()
 
     mnist_model.load_state_dict(torch.load("models/best_mnist_classfier.pth"))
     mnist_model_plus.load_state_dict(torch.load("models/best_mnist_classfier_plus.pth"))
-    cifar10_model.load_state_dict(torch.load("models/best_cifar10_classfier.pth"))
+    #cifar10_model.load_state_dict(torch.load("models/best_cifar10_classfier.pth"))
 
     mnist_provider = SampleProvider(mnist_sample)
-    cifar10_provider = SampleProvider(cifar10_sample)
+    #cifar10_provider = SampleProvider(cifar10_sample)
 
     mnist_solver_plus = Solver(mnist_model_plus, mnist_provider,num_step)
-    cifar10_solver = Solver(cifar10_model, cifar10_provider,num_step)
+    #cifar10_solver = Solver(cifar10_model, cifar10_provider,num_step)
 
     mnist_ig_b ,img1 ,label1 = mnist_solver_plus.compute_integrated_gradients(baseline_type='black')
     mnist_ig_g ,img2 ,label2 = mnist_solver_plus.compute_integrated_gradients(baseline_type='guassian')
@@ -149,10 +149,10 @@ if __name__ == "__main__":
 
 
 
-    cifar10_ig_b ,img5 , label5 = cifar10_solver.compute_integrated_gradients(baseline_type='black')
-    cifar10_ig_g ,img6 , label6= cifar10_solver.compute_integrated_gradients(baseline_type='guassian')
-    cifar10_ig_a ,img7 , label7= cifar10_solver.compute_integrated_gradients(baseline_type='average')
-    cifar10_ig_w ,img8 , label8= cifar10_solver.compute_integrated_gradients(baseline_type='white')
+    # cifar10_ig_b ,img5 , label5 = cifar10_solver.compute_integrated_gradients(baseline_type='black')
+    # cifar10_ig_g ,img6 , label6= cifar10_solver.compute_integrated_gradients(baseline_type='guassian')
+    # cifar10_ig_a ,img7 , label7= cifar10_solver.compute_integrated_gradients(baseline_type='average')
+    # cifar10_ig_w ,img8 , label8= cifar10_solver.compute_integrated_gradients(baseline_type='white')
 
     plot_MNIST_denormalized(torch.stack([mnist_ig_b,img1]),[label1,label1])
     heat_map_mnist(mnist_ig_b)
@@ -166,14 +166,14 @@ if __name__ == "__main__":
 
 
 
-    plot_CIFAR10_denormalized(torch.stack([cifar10_ig_b,img5]),[label5,label5])
-    heat_map_cifar10(cifar10_ig_b)
-    plot_CIFAR10_denormalized(torch.stack([cifar10_ig_g,img6]),[label6,label6])
-    heat_map_cifar10(cifar10_ig_g)
-    plot_CIFAR10_denormalized(torch.stack([cifar10_ig_a,img7]),[label7,label7])
-    heat_map_cifar10(cifar10_ig_a)
-    plot_CIFAR10_denormalized(torch.stack([cifar10_ig_w,img8]),[label8,label8])
-    heat_map_cifar10(cifar10_ig_w)
+    # plot_CIFAR10_denormalized(torch.stack([cifar10_ig_b,img5]),[label5,label5])
+    # heat_map_cifar10(cifar10_ig_b)
+    # plot_CIFAR10_denormalized(torch.stack([cifar10_ig_g,img6]),[label6,label6])
+    # heat_map_cifar10(cifar10_ig_g)
+    # plot_CIFAR10_denormalized(torch.stack([cifar10_ig_a,img7]),[label7,label7])
+    # heat_map_cifar10(cifar10_ig_a)
+    # plot_CIFAR10_denormalized(torch.stack([cifar10_ig_w,img8]),[label8,label8])
+    # heat_map_cifar10(cifar10_ig_w)
 
 
 
